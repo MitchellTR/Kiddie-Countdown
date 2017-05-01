@@ -6,9 +6,9 @@
 	<script src="phaser.min.js"></script>
 	<script src="Game.js"></script>
 </head>
-<body>
+<body style="margin-left:0px;margin-top:0px;">
 
-<div id="gameContainer"></div>
+<div style="margin-left:0px;margin-top:0px;" id="gameContainer"></div>
 
 <script type="text/javascript">
 
@@ -16,17 +16,66 @@ window.onload = function() {
 
 	//	Create your Phaser game and inject it into the gameContainer div.
 	//	We did it in a window.onload event, but you can do it anywhere (requireJS load, anonymous function, jQuery dom ready, - whatever floats your boat)
-	var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+	var game = new Phaser.Game(985, 1530, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+
+	const depart = new Date(2017,3,30,15,0,0,0);
+	const arrive = new Date(2017,4,5,17,40,0,0);
+	const tripLength = arrive - depart;
+	var now = Date.now();
+	var dateDiff = arrive - now;
+	const day = 24 * 60 * 60 * 1000;
+	const hour = day / 24;
+	const minute = hour / 60;
+	const second = 1000;
+	var days = 0;
+	var hours = 0;
+	var minutes = 0;
+	var seconds = 0;
+
+	var secondLabel;
+	var dayLabel;
+	var hourLabel;
+	var minuteLabel;
+	var erica;
 
 	function preload() {
-		game.load.image('test','assets/preloader_background.jpg');
+		game.load.image('bg1','assets/bg1.png');
+		game.load.image('erica','assets/erica.png');
 	}
 
 	function create() {
-		game.add.sprite(0, 0, 'test');
+		var style = { font: "bold 128px Arial", fill: "#FFF", boundsAlignH: "center", boundsAlignV: "middle" };
+		game.add.image(0,0,'bg1');
+		erica = game.add.sprite(115,290,'erica'); //start point 290, end point 1070
+		erica.anchor.x = 0.5;
+		erica.anchor.y = 0.5;
+    //  The Text is positioned at 0, 100
+    //text = game.add.text(0, 0, depart, style);
+	  // text = game.add.text(0, 100, arrive, style);
+		dayLabel = game.add.text(110,1320,days,style);
+		hourLabel = game.add.text(310,1320,hours,style);
+		minuteLabel = game.add.text(560,1320,minutes,style);
+		secondLabel = game.add.text(800,1320,seconds,style);
+		dayLabel.anchor.setTo(0.5,0.5);
+		hourLabel.anchor.setTo(0.5,0.5);
+		minuteLabel.anchor.setTo(0.5,0.5);
+		secondLabel.anchor.setTo(0.5,0.5);
 	}
 
 	function update() {
+		now = Date.now();
+		dateDiff = arrive - now;
+		days = Math.floor(dateDiff / day);
+		hours = Math.floor(dateDiff % day / hour);
+		minutes = Math.floor(dateDiff % hour / minute);
+		seconds = Math.floor(dateDiff % minute / second);
+
+		dayLabel.setText(days);
+		hourLabel.setText(hours);
+		minuteLabel.setText(minutes);
+		secondLabel.setText(seconds);
+
+		erica.y = 290 + 780 * ((now - depart) / tripLength);
 	}
 };
 
